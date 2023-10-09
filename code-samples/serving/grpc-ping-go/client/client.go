@@ -15,6 +15,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 )
 
 var (
@@ -39,6 +40,18 @@ func main() {
 		})
 		opts = append(opts, grpc.WithTransportCredentials(cred))
 	}
+	opt2 := grpc.WithKeepaliveParams(keepalive.ClientParameters{
+		// Time is a duration after this if the client doesn't see any activity it
+		// pings the server to see if the transport is still alive.
+		Time: 1 * time.Minute,
+
+		// PermitWithoutStream is a boolean flag.
+		// If true, client sends keepalive pings even with no active RPCs.
+		PermitWithoutStream: true,
+	})
+
+	opts = append(opts, opt2)
+
 	conn, err := grpc.Dial(*serverAddr, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
