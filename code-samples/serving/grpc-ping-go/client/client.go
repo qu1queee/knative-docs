@@ -42,6 +42,7 @@ func main() {
 	}
 
 	targetEndpoint := fmt.Sprintf("%s%s", "xds:///", *serverAddr)
+	fmt.Println(targetEndpoint)
 	conn, err := grpc.Dial(targetEndpoint, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
