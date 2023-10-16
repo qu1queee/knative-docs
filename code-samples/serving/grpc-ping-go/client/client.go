@@ -15,6 +15,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	_ "google.golang.org/grpc/xds"
 )
 
 var (
@@ -39,7 +40,9 @@ func main() {
 		})
 		opts = append(opts, grpc.WithTransportCredentials(cred))
 	}
-	conn, err := grpc.Dial(*serverAddr, opts...)
+
+	targetEndpoint := fmt.Sprintf("%s%s", "xds:///", *serverAddr)
+	conn, err := grpc.Dial(targetEndpoint, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
